@@ -1,6 +1,6 @@
 <div align="center">
 	<h1>Student Search</h1>
-	<p><strong>Firebase-powered directory search for HKBUAS students.</strong></p>
+	<p><strong>Firebase-powered directory search for students.</strong></p>
 </div>
 
 ## Prerequisites
