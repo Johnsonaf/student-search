@@ -15,7 +15,7 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/search'); // Go to search page after login
-    } catch (err) {
+    } catch {
       setError('Invalid email or passcode. Try again.');
     }
   };
