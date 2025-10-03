@@ -6,9 +6,19 @@ import { db, auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { User } from 'firebase/auth';
 
+// Paste your interface here
+interface Student {
+  id: string;
+  class: string;          // 'Class' column
+  classNo: string;        // 'Class No.' column (note: spaces become camelCase)
+  englishName: string;    // 'English Name' column
+  house: string;          // 'House' column
+  // Add more, e.g., grade?: string; email?: string;
+}
+
 export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
@@ -39,7 +49,7 @@ export default function SearchPage() {
         where('name', '<=', searchTerm.trim() + '\uf8ff') // Unicode trick for prefix end
       );
       const snapshot = await getDocs(q);
-      setStudents(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setStudents(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Student)));
     } catch (error) {
       console.error('Search error:', error);
       alert('Search failed—check console for details.');
@@ -97,10 +107,11 @@ export default function SearchPage() {
           <div className="space-y-4">
             {students.map((student) => (
               <div key={student.id} className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800">{student.name || 'N/A'}</h3>
-                <p className="text-gray-600"><strong>Grade:</strong> {student.grade || 'N/A'}</p>
-                <p className="text-gray-600"><strong>ID:</strong> {student.id || 'N/A'}</p>
-                {/* Add more fields here based on your CSV, e.g., <p><strong>Email:</strong> {student.email}</p> */}
+                <h3 className="text-lg font-semibold text-gray-800">{student.englishName || 'N/A'}</h3>
+                <p className="text-gray-600"><strong>Class:</strong> {student.class || 'N/A'}</p>
+                <p className="text-gray-600"><strong>Class No.:</strong> {student.classNo || 'N/A'}</p>
+                <p className="text-gray-600"><strong>House:</strong> {student.house || 'N/A'}</p>
+                {/* Add more fields, e.g., <p><strong>Grade:</strong> {student.grade || 'N/A'}</p> */}
               </div>
             ))}
           </div>
