@@ -16,8 +16,8 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/search'); // Go to search page after login
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Invalid email or passcode. Try again.';
-      setError(message);
+      const baseMessage = error instanceof Error ? error.message : undefined;
+      setError(baseMessage?.trim() || 'Invalid email or passcode. Try again.');
     }
   };
 

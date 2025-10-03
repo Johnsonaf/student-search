@@ -1,66 +1,67 @@
-<<<<<<< HEAD
-# student-search
+<div align="center">
+	<h1>Student Search</h1>
+	<p><strong>Firebase-powered directory search for HKBUAS students.</strong></p>
+</div>
 
-A student search application.
+## Prerequisites
 
-## Setup
+- Node.js 18.18+ (or 20+)
+- npm (ships with Node.js)
+- A Firebase project with Authentication (Email/Password) and Firestore enabled
 
-To set up this repository locally:
+## Quick start
 
-1. Clone the repository:
-```bash
+```powershell
 git clone https://github.com/Johnsonaf/student-search.git
 cd student-search
-```
-
-## Deployment
-
-If you're creating your own fork of this repository:
-
-```bash
-git remote add origin https://github.com/yourusername/student-search.git
-git branch -M main
-git push -u origin main
-```
-
-## Usage
-
-More details coming soon.
-=======
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
+npm install
+# create .env.local and populate the environment variables below
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open <http://localhost:3000> to use the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the project root and provide the Firebase credentials that are safe for the browser. The app fails fast during boot if anything is missing, so double-check the names below:
 
-## Learn More
+```text
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+```
 
-To learn more about Next.js, take a look at the following resources:
+> These are the **public** keys from your Firebase console. Never commit the file to Git.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Available scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Command        | Description                                   |
+| -------------- | --------------------------------------------- |
+| `npm run dev`  | Start the development server with Turbopack.  |
+| `npm run lint` | Run ESLint using the Next.js config.          |
+| `npm run build`| Create a production build (uses Turbopack).   |
+| `npm start`    | Serve the production build locally.           |
 
-## Deploy on Vercel
+## Deploying
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The repo is configured for Vercel. Create the same environment variables in your Vercel project (Project Settings → Environment Variables) and trigger a deployment. Vercel will automatically run `npm run build`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
->>>>>>> cf70ad0 (Initial student search app)
+## Architecture notes
+
+- **Next.js 15 App Router** powers routing and server rendering.
+- **Firebase Auth** guards the search page and handles email/password sign-in.
+- **Firestore** stores student documents. Search happens client-side with fuzzy scoring to rank results.
+- **Tailwind CSS** styles the UI (using the new Tailwind CSS v4 build pipeline).
+
+## Troubleshooting
+
+- Seeing a 404 on Vercel? Confirm you removed any custom rewrites and that deployment targets the `app` directory.
+- Build failing with `Missing Firebase configuration value`? Ensure all environment variables listed above are set for the environment you're running in.
+- Auth redirects repeatedly? Double-check that Firebase Authentication has your application's domain in the authorized list and that the email/password provider is enabled.
+
+## License
+
+This project is licensed under the MIT License.
