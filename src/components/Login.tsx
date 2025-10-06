@@ -30,13 +30,13 @@ export default function Login() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_55%)]" aria-hidden />
       <div className="relative mx-auto flex w-full max-w-md flex-col items-center text-center text-white/80">
         <span className="mb-3 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs uppercase tracking-[0.2em] text-white/60 backdrop-blur">
-          Student Services
+          Slow is smooth, smooth is fast.
         </span>
         <form
           onSubmit={handleLogin}
           className="w-full rounded-3xl border border-white/10 bg-white/95 p-8 text-left shadow-2xl backdrop-blur-lg sm:p-10"
         >
-          <h2 className="mb-2 text-center text-2xl font-semibold text-slate-900 sm:text-3xl">NSQ Search by JC Login</h2>
+          <h2 className="mb-2 text-center text-2xl font-semibold text-slate-900 sm:text-3xl">NSQ Search by JC</h2>
           <p className="mb-6 text-center text-sm text-slate-500 sm:text-base">
             Sign in with your school email and passcode to continue.
           </p>

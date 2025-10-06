@@ -461,7 +461,7 @@ export default function SearchPage() {
           </div>
         ) : searchTerm ? (
           <div className="rounded-3xl border border-dashed border-white/10 bg-slate-900/70 p-12 text-center text-slate-300">
-            <h3 className="text-xl font-semibold text-white">No matches for &ldquo;{searchTerm}&rdquo;</h3>
+            <h3 className="text-xl font-semibold text-white"> &ldquo;{searchTerm}&rdquo;</h3>
             <p className="mt-3 text-sm text-slate-400">
             </p>
           </div>
