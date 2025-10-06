@@ -30,6 +30,70 @@ const houseAssetMap: Record<string, string> = {
   wisdom: '/Pic/Wisdom.png',
 };
 
+const GOOGLE_FORM_BASE_URL =
+  process.env.NEXT_PUBLIC_GOOGLE_FORM_BASE_URL?.trim() ||
+  'https://docs.google.com/forms/d/e/1FAIpQLSdk4nXCC0dKpleMGnH1Cgpmz3bLRtcOOjIz5i8ffWD7GXZQJw/viewform';
+
+const GOOGLE_FORM_FIELD_MAP = {
+  class: process.env.NEXT_PUBLIC_GOOGLE_FORM_FIELD_CLASS?.trim() ?? '',
+  classNo: process.env.NEXT_PUBLIC_GOOGLE_FORM_FIELD_CLASS_NO?.trim() ?? '',
+  englishName: process.env.NEXT_PUBLIC_GOOGLE_FORM_FIELD_ENGLISH_NAME?.trim() ?? '',
+} as const;
+
+const GOOGLE_FORM_TIMESTAMP_FIELD = process.env.NEXT_PUBLIC_GOOGLE_FORM_FIELD_TIMESTAMP?.trim() ?? '';
+
+const GOOGLE_FORM_IS_CONFIGURED = Object.values(GOOGLE_FORM_FIELD_MAP).every((value) => value.length > 0);
+
+const formatFormDateTime = (date: Date): string => {
+  const pad = (input: number) => input.toString().padStart(2, '0');
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+const buildGoogleFormPrefillUrl = (student: Student): string => {
+  try {
+    const url = new URL(GOOGLE_FORM_BASE_URL);
+    url.searchParams.set('usp', 'pp_url');
+
+    const maybeSet = (fieldKey: string, value: string | undefined) => {
+      if (!fieldKey || !value?.trim()) return;
+      url.searchParams.set(fieldKey, value.trim());
+    };
+
+    maybeSet(GOOGLE_FORM_FIELD_MAP.class, student.class);
+    maybeSet(GOOGLE_FORM_FIELD_MAP.classNo, student.classNo);
+    maybeSet(GOOGLE_FORM_FIELD_MAP.englishName, student.englishName);
+    if (GOOGLE_FORM_TIMESTAMP_FIELD) {
+      maybeSet(GOOGLE_FORM_TIMESTAMP_FIELD, formatFormDateTime(new Date()));
+    }
+
+    return url.toString();
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Invalid Google Form base URL; returning fallback.', error);
+    }
+
+    const params = new URLSearchParams({ usp: 'pp_url' });
+    const maybeSet = (fieldKey: string, value: string | undefined) => {
+      if (!fieldKey || !value?.trim()) return;
+      params.set(fieldKey, value.trim());
+    };
+
+    maybeSet(GOOGLE_FORM_FIELD_MAP.class, student.class);
+    maybeSet(GOOGLE_FORM_FIELD_MAP.classNo, student.classNo);
+    maybeSet(GOOGLE_FORM_FIELD_MAP.englishName, student.englishName);
+    if (GOOGLE_FORM_TIMESTAMP_FIELD) {
+      params.set(GOOGLE_FORM_TIMESTAMP_FIELD, formatFormDateTime(new Date()));
+    }
+
+    return `${GOOGLE_FORM_BASE_URL}?${params.toString()}`;
+  }
+};
+
 const readStringField = (data: Record<string, unknown>, keys: string[]): string => {
   for (const key of keys) {
     if (!(key in data)) continue;
@@ -314,6 +378,10 @@ export default function SearchPage() {
             {students.map((student) => {
               const houseKey = student.house?.trim().toLowerCase() ?? '';
               const houseIcon = houseAssetMap[houseKey];
+              const googleFormUrl = buildGoogleFormPrefillUrl(student);
+              const prefillStatusMessage = GOOGLE_FORM_IS_CONFIGURED
+                ? 'Opens the Google Form with this record prefilled.'
+                : 'Set the NEXT_PUBLIC_GOOGLE_FORM_FIELD_* variables to enable prefill.';
 
               return (
                 <article
@@ -354,6 +422,39 @@ export default function SearchPage() {
                       </dd>
                     </div>
                   </dl>
+                  <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <a
+                      href={googleFormUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold shadow transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 ${
+                        GOOGLE_FORM_IS_CONFIGURED
+                          ? 'bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 text-white hover:from-sky-400 hover:via-indigo-400 hover:to-purple-500'
+                          : 'cursor-not-allowed border border-white/10 bg-white/10 text-slate-300 opacity-70'
+                      }`}
+                      aria-disabled={!GOOGLE_FORM_IS_CONFIGURED}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                        aria-hidden
+                      >
+                        <path d="M8 17.333 2.667 12 8 6.667" />
+                        <path d="M2.667 12H16" />
+                        <path d="M21.333 5.333v13.334" />
+                      </svg>
+                      {GOOGLE_FORM_IS_CONFIGURED ? 'Prefill request form' : 'Form prefill unavailable'}
+                    </a>
+                    <p className="text-xs text-slate-400" aria-live="polite">
+                      {prefillStatusMessage}
+                    </p>
+                  </div>
                 </article>
               );
             })}

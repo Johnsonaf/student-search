@@ -32,9 +32,16 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_GOOGLE_FORM_BASE_URL=https://docs.google.com/forms/d/e/1FAIpQLSdk4nXCC0dKpleMGnH1Cgpmz3bLRtcOOjIz5i8ffWD7GXZQJw/viewform
+NEXT_PUBLIC_GOOGLE_FORM_FIELD_CLASS=
+NEXT_PUBLIC_GOOGLE_FORM_FIELD_CLASS_NO=
+NEXT_PUBLIC_GOOGLE_FORM_FIELD_ENGLISH_NAME=
+NEXT_PUBLIC_GOOGLE_FORM_FIELD_TIMESTAMP=
 ```
 
 > These are the **public** keys from your Firebase console. Never commit the file to Git.
+
+Set the `NEXT_PUBLIC_GOOGLE_FORM_FIELD_*` values to the relevant `entry.xxxxxx` identifiers from your Google Form (one per question). When they're provided, student cards expose a shortcut that opens the form with the class, class number, and English name prefilled. If you also provide `NEXT_PUBLIC_GOOGLE_FORM_FIELD_TIMESTAMP`, the shortcut overwrites that question with the exact date/time at the moment of the click using the `YYYY-MM-DD HH:MM` 24-hour format. If you already have a pre-filled link for default answers, you can paste that entire URL into `NEXT_PUBLIC_GOOGLE_FORM_BASE_URL`; the app keeps every existing query parameter and simply layers the student-specific ones (and the live timestamp) on top.
 
 ## Available scripts
 
